@@ -1,7 +1,9 @@
 package staff.controllers;
 
+import javafx.application.Platform;
 import staff.Main;
 import staff.utils.JSONService;
+import javafx.concurrent.Task;
 
 import static java.lang.Thread.sleep;
 
@@ -14,18 +16,17 @@ public class Controller {
     }
 
     public void startHeartBeat() {
-        /*Task heartBeat = new Task<Void>() {
+        Task<Void> heartBeat = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                return null;
-            }
-
-            @Override
-            public void run() {
                 while(true) {
                     try {
-                        sleep(3000);
-                        poll();
+                        sleep(1000);
+                        Platform.runLater(new Runnable() {
+                            @Override public void run() {
+                                poll();
+                            }
+                        });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -33,13 +34,11 @@ public class Controller {
             }
         };
 
-        new Thread(heartBeat).start();*/
-        JSONService.getNewOrders();
+        new Thread(heartBeat).start();
     }
 
     public void poll() {
-        //fetch from api
-
+        JSONService.getNewOrders();
         view.newOrder("Pizza Margarita XL");
     }
 }
