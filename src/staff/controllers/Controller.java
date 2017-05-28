@@ -1,11 +1,7 @@
-package sample;
+package staff.controllers;
 
-import com.oracle.webservices.internal.api.databinding.Databinding;
-import com.sun.security.ntlm.Client;
-import javafx.concurrent.Task;
-import sample.Main;
-
-import javax.xml.ws.Response;
+import staff.Main;
+import staff.utils.JSONService;
 
 import static java.lang.Thread.sleep;
 

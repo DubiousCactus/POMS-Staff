@@ -1,4 +1,4 @@
-package sample;
+package staff;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -15,7 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import staff.controllers.Controller;
 
 
 public class Main extends Application {
