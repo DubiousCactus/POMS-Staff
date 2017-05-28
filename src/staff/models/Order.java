@@ -9,22 +9,19 @@ import java.util.Date;
  */
 public class Order {
 
-    private int id;
     private int user_id;
-    private boolean processed;
-    private int waiting_time;
+    private Address address;
     private Date created_at;
-    private int address_id;
-    private boolean confirmed;
+    private int waiting_time;
 
-    public Order(int id, int user_id, boolean processed, int waiting_time, String created_at, int address_id, boolean confirmed) {
-        this.id = id;
+    public Order(int user_id, String created_at, int address_id) {
         this.user_id = user_id;
-        this.processed = processed;
-        this.waiting_time = waiting_time;
         //this.created_at = new Date(created_at);
-        this.address_id = address_id;
-        this.confirmed = confirmed;
+
+        if (address_id != 0)
+            address = JSONService.getAddress(address_id);
+        else
+            address = null;
     }
 
     public void setWaitingTime(int waitingTime) {
@@ -32,10 +29,6 @@ public class Order {
     }
 
     public void confirm() {
-        this.confirmed = true;
-    }
-
-    public Address getAddress() {
-        return JSONService.getAddress(this.address_id);
+        //
     }
 }

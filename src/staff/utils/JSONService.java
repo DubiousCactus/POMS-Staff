@@ -53,11 +53,9 @@ public class JSONService {
 
             JSONObject obj = new JSONObject(br.readLine());
             address = new Address(
-                    obj.getInt("id"),
                     obj.getInt("user_id"),
                     obj.getString("street"),
-                    obj.getString("city"),
-                    obj.getString("created_at")
+                    obj.getString("city")
             );
 
             conn.disconnect();
@@ -90,19 +88,13 @@ public class JSONService {
             ));
 
             JSONArray obj = new JSONArray(br.readLine());
-            System.out.println("New order: id = " + obj.getJSONObject(0).getInt("id") + ", created at =  " + obj.getJSONObject(0).getString("created_at"));
-
             for (int i = 0; i < obj.length(); i++) {
                 JSONObject orderJson = obj.getJSONObject(i);
 
                 Order order = new Order(
-                        orderJson.getInt("id"),
                         orderJson.getInt("user_id"),
-                        (orderJson.getInt("processed") != 0),
-                        orderJson.getInt("waiting_time"),
                         orderJson.getString("created_at"),
-                        (orderJson.isNull("address_id") ? 0 : orderJson.getInt("address_id")),
-                        (orderJson.getInt("confirmed") != 0)
+                        (orderJson.isNull("address_id") ? 0 : orderJson.getInt("address_id"))
                 );
 
                 orders.add(order);

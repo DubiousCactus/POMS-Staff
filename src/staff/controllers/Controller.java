@@ -35,7 +35,6 @@ public class Controller {
 
         new Thread(heartBeat).start();*/
         JSONService.getNewOrders();
-        poll();
     }
 
     public void poll() {
