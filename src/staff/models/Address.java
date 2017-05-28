@@ -19,8 +19,6 @@ public class Address {
         this.user_id = user_id;
         this.street = street;
         this.city = city;
-        this.created_at = new Date(created_at);
+        //this.created_at = new Date(created_at);
     }
-
-    
 }

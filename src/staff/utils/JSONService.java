@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import staff.models.Address;
 import staff.models.Order;
 
 
@@ -31,6 +32,44 @@ public class JSONService {
         + "v50ahCpmZ_6UMTpRsTd4HrpirUxR4QPoyLGxkBFF9JlkTLKh0QP0jZ3LjY1Tyqd3ndzGLPZKGiEr_P2jgHhJY6zcQAU0p0tirBrihd58ruAUDxj5JqY";
 
     private static final String baseURL = "http://localhost:8000/api";
+
+    public static Address getAddress(int id) {
+        Address address = null;
+
+        try {
+
+            URL url = new URL(baseURL.concat("/addresses/" + id));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.addRequestProperty("Authorization", token);
+
+            if (conn.getResponseCode() != 200)
+                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream()
+            ));
+
+            JSONObject obj = new JSONObject(br.readLine());
+            address = new Address(
+                    obj.getInt("id"),
+                    obj.getInt("user_id"),
+                    obj.getString("street"),
+                    obj.getString("city"),
+                    obj.getString("created_at")
+            );
+
+            conn.disconnect();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return address;
+    }
 
     public static ArrayList<Order> getNewOrders() {
         ArrayList<Order> orders = new ArrayList<>();
@@ -55,14 +94,15 @@ public class JSONService {
 
             for (int i = 0; i < obj.length(); i++) {
                 JSONObject orderJson = obj.getJSONObject(i);
+
                 Order order = new Order(
                         orderJson.getInt("id"),
                         orderJson.getInt("user_id"),
-                        orderJson.getBoolean("processed"),
+                        (orderJson.getInt("processed") != 0),
                         orderJson.getInt("waiting_time"),
                         orderJson.getString("created_at"),
-                        orderJson.getInt("address_id"),
-                        orderJson.getBoolean("confirmed")
+                        (orderJson.isNull("address_id") ? 0 : orderJson.getInt("address_id")),
+                        (orderJson.getInt("confirmed") != 0)
                 );
 
                 orders.add(order);

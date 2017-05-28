@@ -1,5 +1,7 @@
 package staff.models;
 
+import staff.utils.JSONService;
+
 import java.util.Date;
 
 /**
@@ -20,7 +22,7 @@ public class Order {
         this.user_id = user_id;
         this.processed = processed;
         this.waiting_time = waiting_time;
-        this.created_at = new Date(created_at);
+        //this.created_at = new Date(created_at);
         this.address_id = address_id;
         this.confirmed = confirmed;
     }
@@ -34,6 +36,6 @@ public class Order {
     }
 
     public Address getAddress() {
-        return null;
+        return JSONService.getAddress(this.address_id);
     }
 }
