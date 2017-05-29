@@ -5,8 +5,6 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -15,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import staff.controllers.Controller;
 
@@ -37,6 +34,8 @@ public class Main extends Application {
         // VBox
         vb = new VBox();
         vb.setPadding(new Insets(10, 100, 50, 100));
+        vb.setMinWidth(800);
+        vb.setMinHeight(500);
         vb.setSpacing(20);
 
         Label lbl = new Label("Received orders\n\n\n");
@@ -44,22 +43,11 @@ public class Main extends Application {
         lbl.setAlignment(Pos.TOP_CENTER);
         vb.getChildren().add(lbl);
 
-        Rectangle r = new Rectangle();
-        r.setFill(Color.WHEAT);
-        r.setWidth(600);
-        r.setHeight(60);
-
-        Label text = new Label("Pizza Royale +cheese,oregano");
-        text.setTextFill(Color.BLACK);
-
-        StackPane stack = new StackPane();
-        stack.getChildren().addAll(r, text);
-        vb.getChildren().add(stack);
-
         // Adding VBox to the scene
         scene = new Scene(vb);
         primaryStage.setScene(scene);
         primaryStage.setTitle("POMS Staff");
+        primaryStage.setFullScreen(true);
         primaryStage.show();
         stage = primaryStage;
     }
@@ -80,20 +68,12 @@ public class Main extends Application {
         System.exit(0);
     }
 
-    //fix that
-    private void appendOrder(String order) {
-        Rectangle r = new Rectangle();
-        r.setFill(Color.WHEAT);
-        r.setWidth(300);
-        r.setHeight(30);
-
-        Label text = new Label("Pizza Royale +cheese,oregano");
-        text.setFont(Font.font("Amble CN", FontWeight.NORMAL, 18));
+    private void appendOrder(String summary) {
+        Label text = new Label(summary);
+        text.setStyle("-fx-background-color: coral; -fx-padding: 30px;");
+        text.setFont(Font.font("Amble CN", FontWeight.NORMAL, 28));
         text.setTextFill(Color.BLACK);
-
-        StackPane stack = new StackPane();
-        stack.getChildren().addAll(r, text);
-        vb.getChildren().add(stack);
+        vb.getChildren().add(text);
     }
 
     public int newOrder(String summary) {
@@ -110,9 +90,10 @@ public class Main extends Application {
         dialog.setContentText("Set waiting time: ");
 
         Optional<String> result = dialog.showAndWait();
+
         if (result.isPresent()){
             waitingTime = Integer.parseInt(result.get());
-            //appendOrder(order);
+            appendOrder(summary);
         }
 
         return waitingTime;

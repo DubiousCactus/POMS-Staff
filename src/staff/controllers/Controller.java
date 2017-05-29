@@ -40,7 +40,7 @@ public class Controller {
                         e.printStackTrace();
                     }
                 }
-                
+
                 return null;
             }
         };
@@ -58,6 +58,7 @@ public class Controller {
                 int waitingTime = view.newOrder(order.getSummary());
 
                 if (waitingTime != 0) {
+                    System.out.println("Waiting time: " + waitingTime);
                     order.setWaitingTime(waitingTime);
                     JSONService.confirmOrder(order);
                 }

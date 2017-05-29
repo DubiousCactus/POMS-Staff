@@ -17,6 +17,7 @@ import staff.models.Order;
  */
 public class JSONService {
 
+    /* Personal access token generated on the server side */
     private static final String token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQyNj"
         + "MyMzUxYmE1YzBmZjdjMzNjNDM1ZGM2ODc4MjZhZmU0ZDUxYmQzMmI2ZWE3ZThjZjUyYTAyMGE4NDQyMjFmNWM5ZT"
         + "QxNjNiMmE1YWRiIn0.eyJhdWQiOiI0IiwianRpIjoiZDI2MzIzNTFiYTVjMGZmN2MzM2M0MzVkYzY4NzgyNmFmZT"
@@ -149,6 +150,10 @@ public class JSONService {
             OutputStream os = conn.getOutputStream();
             os.write(form.toString().getBytes("UTF-8"));
             os.close();
+
+            // read the response
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+
             conn.disconnect();
 
         } catch (IOException e) {

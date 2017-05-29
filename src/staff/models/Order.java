@@ -41,10 +41,6 @@ public class Order {
         return waiting_time;
     }
 
-    public void confirm() {
-        //
-    }
-
     public int getId() {
         return id;
     }
@@ -53,8 +49,17 @@ public class Order {
         String summary = "";
 
         for (FoodItem item : foodItems) {
-            summary += item.getQuantity() + "x "
-                    + item.getName() + " (" + item.getSize() + ") ";
+            summary += item.getQuantity() + "x " + item.getName() + " (" + item.getSize() + ") ";
+
+            if (item.getToppings().length > 0) {
+                summary += "\n\t+ ";
+
+                String toppings[] = item.getToppings();
+                for (int i = 0; i < toppings.length; i++)
+                    summary += toppings[i] + ", ";
+
+                summary = summary.substring(0, summary.lastIndexOf(","));
+            }
         }
 
         return summary;
