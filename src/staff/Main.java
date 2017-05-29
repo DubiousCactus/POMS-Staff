@@ -1,11 +1,13 @@
 package staff;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -17,9 +19,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import staff.controllers.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 
 public class Main extends Application {
 
+    private Controller controller;
     private VBox vb;
     private Scene scene;
     private Stage stage;
@@ -52,9 +59,25 @@ public class Main extends Application {
         // Adding VBox to the scene
         scene = new Scene(vb);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("POMS Staff");
         primaryStage.show();
         stage = primaryStage;
+    }
+
+    /**
+     * This method is called when the application should stop,
+     * and provides a convenient place to prepare for application exit and destroy resources.
+     */
+    @Override
+    public void stop() throws Exception
+    {
+        super.stop();
+
+        if(controller != null)
+            controller.terminate();
+
+        Platform.exit();
+        System.exit(0);
     }
 
     //fix that
@@ -73,19 +96,30 @@ public class Main extends Application {
         vb.getChildren().add(stack);
     }
 
-    public void newOrder(String order) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm new order: \"" + order + "\" ?", ButtonType.YES, ButtonType.NO);
-        alert.initModality(Modality.APPLICATION_MODAL); /* *** */
-        alert.initOwner(stage);                         /* *** */
-        alert.showAndWait();
+    public int newOrder(String summary) {
 
-        if (alert.getResult() == ButtonType.YES) {
+        int waitingTime = 0;
+        List<String> choices = new ArrayList<>();
+        choices.add("30");
+        choices.add("45");
+        choices.add("60");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("45", choices);
+        dialog.setTitle("New order");
+        dialog.setHeaderText("Confirm new order:\n\"" + summary + "\" ?");
+        dialog.setContentText("Set waiting time: ");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            waitingTime = Integer.parseInt(result.get());
             //appendOrder(order);
         }
+
+        return waitingTime;
     }
 
     private void initController() {
-        Controller controller = new Controller(this);
+        controller = new Controller(this);
         controller.startHeartBeat();
     }
 

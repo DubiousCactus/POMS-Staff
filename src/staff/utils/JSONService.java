@@ -1,8 +1,6 @@
 package staff.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,6 +8,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import staff.models.Address;
+import staff.models.FoodItem;
 import staff.models.Order;
 
 
@@ -92,10 +91,30 @@ public class JSONService {
                 JSONObject orderJson = obj.getJSONObject(i);
 
                 Order order = new Order(
+                        orderJson.getInt("id"),
                         orderJson.getInt("user_id"),
                         orderJson.getString("created_at"),
                         (orderJson.isNull("address_id") ? 0 : orderJson.getInt("address_id"))
                 );
+
+                JSONArray items = orderJson.getJSONArray("items");
+                for (int j = 0; j < items.length(); j++) {
+                    JSONObject foodItem = items.getJSONObject(j);
+                    JSONArray toppingsArray = foodItem.getJSONArray("toppings");
+                    String[] toppings = new String[toppingsArray.length()];
+
+                    for (int k = 0; k < toppingsArray.length(); k++) {
+                        toppings[k] = toppingsArray.getString(k);
+                    }
+
+                    order.addItem(new FoodItem(
+                            foodItem.getString("name"),
+                            foodItem.getString("ingredients"),
+                            foodItem.getInt("quantity"),
+                            foodItem.getString("size"),
+                            toppings
+                    ));
+                }
 
                 orders.add(order);
             }
@@ -109,5 +128,33 @@ public class JSONService {
         }
 
         return orders;
+    }
+
+    public static void confirmOrder(Order order) {
+        try {
+
+            URL url = new URL(baseURL.concat("/orders/" + order.getId() + "/confirm"));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+            conn.addRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            conn.addRequestProperty("Authorization", token);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            JSONObject form = new JSONObject();
+            form.put("confirmed", true);
+            form.put("waiting_time", order.getWaitingTime());
+
+            OutputStream os = conn.getOutputStream();
+            os.write(form.toString().getBytes("UTF-8"));
+            os.close();
+            conn.disconnect();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
     }
 }
