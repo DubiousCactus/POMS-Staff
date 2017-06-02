@@ -49,7 +49,7 @@ public class Controller {
         heartBeatThread.start();
     }
 
-    public void poll() {
+    private void poll() {
         ArrayList<Order> newOrders = JSONService.getNewOrders();
 
         for (Order order : newOrders) {
