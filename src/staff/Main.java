@@ -6,7 +6,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -16,6 +18,11 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import staff.controllers.Controller;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +36,8 @@ public class Main extends Application {
     private Stage stage;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+        initAPIEndpoint();
         initController();
         // VBox
         vb = new VBox();
@@ -97,6 +105,24 @@ public class Main extends Application {
         }
 
         return waitingTime;
+    }
+
+    private void initAPIEndpoint() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Set endpoint IP");
+        dialog.setHeaderText("Please enter the API's IP address");
+        dialog.setContentText("IP: ");
+
+        Optional<String> ip = dialog.showAndWait();
+
+        if (!ip.isPresent())
+            return;
+
+        try {
+            Files.write(Paths.get("endpoint"), ip.get().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initController() {

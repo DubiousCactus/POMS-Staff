@@ -3,6 +3,8 @@ package staff.utils;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -31,14 +33,25 @@ public class JSONService {
         + "QQanRKi4GvpkZ12mw9k6zXR_R2KC7rKR6HUndyEBvgCURo5ZV29I_CEEhocjs8WSQEUNsbhWs2rGGqRLKG7RgLYLeKRE6Wv"
         + "v50ahCpmZ_6UMTpRsTd4HrpirUxR4QPoyLGxkBFF9JlkTLKh0QP0jZ3LjY1Tyqd3ndzGLPZKGiEr_P2jgHhJY6zcQAU0p0tirBrihd58ruAUDxj5JqY";
 
-    private static final String baseURL = "http://localhost:8000/api";
+    private static String IP = "localhost";
+    private static String baseURL = "http://" + IP + ":8000/api";
+
+    private static String getBaseURL() {
+        try {
+            IP = new String(Files.readAllBytes(Paths.get("endpoint")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return baseURL;
+    }
 
     public static Address getAddress(int id) {
         Address address = null;
 
         try {
 
-            URL url = new URL(baseURL.concat("/addresses/" + id));
+            URL url = new URL(getBaseURL().concat("/addresses/" + id));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
@@ -74,7 +87,7 @@ public class JSONService {
 
         try {
 
-            URL url = new URL(baseURL.concat("/orders/new"));
+            URL url = new URL(getBaseURL().concat("/orders/new"));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
@@ -134,7 +147,7 @@ public class JSONService {
     public static void confirmOrder(Order order) {
         try {
 
-            URL url = new URL(baseURL.concat("/orders/" + order.getId() + "/confirm"));
+            URL url = new URL(getBaseURL().concat("/orders/" + order.getId() + "/confirm"));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
